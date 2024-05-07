@@ -86,7 +86,7 @@ class TappablePolylineLayer extends PolylineLayer {
       var i = 0;
       for (var point in polyline.points) {
         var pos = mapCamera.project(point);
-        pos = (pos * mapCamera.getZoomScale(mapCamera.zoom, mapCamera.zoom)) - 
+        pos = (pos * mapCamera.getZoomScale(mapCamera.zoom, mapCamera.zoom)) -
             mapCamera.pixelOrigin.toDoublePoint();
         polyline._offsets.add(Offset(pos.x.toDouble(), pos.y.toDouble()));
         if (i > 0 && i < polyline.points.length) {
@@ -96,37 +96,33 @@ class TappablePolylineLayer extends PolylineLayer {
       }
     }
 
-    return Container(
-      child: GestureDetector(
-        onDoubleTap: () {
-          // For some strange reason i have to add this callback for the onDoubleTapDown callback to be called.
-        },
-        onDoubleTapDown: (TapDownDetails details) {
-          _zoomMap(details, context);
-        },
-        onTapUp: (TapUpDetails details) {
-          _handleGesture(
-            context,
-            TapPosition(details.globalPosition, details.localPosition),
-            onTap,
-            MapOptions.of(context).onTap,
-          );
-        },
-        onLongPressStart: (LongPressStartDetails details) {
-          _handleGesture(
-            context,
-            TapPosition(details.globalPosition, details.localPosition),
-            onLongPress,
-            MapOptions.of(context).onLongPress,
-          );
-        },
-        child: Stack(
-          children: [
-            CustomPaint(
-              painter: PolylinePainter(lines, mapCamera),
-              size: size,
-            ),
-          ],
+    return GestureDetector(
+      onDoubleTap: () {
+        // For some strange reason i have to add this callback for the onDoubleTapDown callback to be called.
+      },
+      onDoubleTapDown: (TapDownDetails details) {
+        _zoomMap(details, context);
+      },
+      onTapUp: (TapUpDetails details) {
+        _handleGesture(
+          context,
+          TapPosition(details.globalPosition, details.localPosition),
+          onTap,
+          MapOptions.of(context).onTap,
+        );
+      },
+      onLongPressStart: (LongPressStartDetails details) {
+        _handleGesture(
+          context,
+          TapPosition(details.globalPosition, details.localPosition),
+          onLongPress,
+          MapOptions.of(context).onLongPress,
+        );
+      },
+      child: MobileLayerTransformer(
+        child: CustomPaint(
+          painter: PolylinePainter(lines, mapCamera),
+          size: size,
         ),
       ),
     );
